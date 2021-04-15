@@ -59,18 +59,3 @@ TEST(Sequential_Radix_Sort, sort_just_sorted_vector) {
     std::sort(vec2.begin(), vec2.begin() + vec2.size());
     ASSERT_EQ(vec1, vec2);
 }
-
-/*TEST(Sequential_Radix_Sort, sort_vector_of_random_value_with_time) {
-    std::vector<int> vec1 = getRandomVector(1'600'000);
-    std::vector<int> vec2 = vec1;
-    std::cout << std::endl;
-    double t1 = omp_get_wtime();
-    signedRadixSortOmp(vec1.data(), vec1.size());
-    double t2 = omp_get_wtime();
-    std::cout << "Par: " << t2 - t1 << std::endl;
-    t1 = omp_get_wtime();
-    signedRadixSort(vec2.data(), vec2.size());
-    t2 = omp_get_wtime();
-    std::cout << "Seq: " << t2 - t1 << std::endl;
-    ASSERT_EQ(vec1, vec2);
-}*/
