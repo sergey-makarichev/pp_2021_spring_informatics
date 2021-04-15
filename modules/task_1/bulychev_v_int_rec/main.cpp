@@ -66,7 +66,7 @@ TEST(Integrate_rectangle, Test_int_rec_2) {
 
     double ans = 3.3218;
 
-    double ans1 = Calculation(a, b, 50, f1);
+    double ans1 = Calculation(a, b, 10, f1);
 
     ASSERT_NEAR(ans, ans1, 100);
 }
@@ -113,9 +113,13 @@ TEST(Integrate_rectangle, Test_int_rec_5) {
 
     double ans = 75251.8655;
 
-    double ans1 = Calculation(a, b, 50, f4);
+    double ans1 = Calculation(a, b, 10, f4);
 
-    ASSERT_NEAR(ans, ans1, 200);
+    ASSERT_NEAR(ans, ans1, 2000);
+}
+
+TEST(Integrate_rectangle, Test_int_rec_6) {
+
 }
 
 int main(int argc, char **argv) {
