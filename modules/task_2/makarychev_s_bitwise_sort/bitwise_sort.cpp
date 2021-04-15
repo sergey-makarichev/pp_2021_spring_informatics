@@ -104,7 +104,7 @@ void signedRadixSort(int* sortVec, int sizeVec) {
 }
 
 void signedRadixSortOmp(int* sortVec, int sizeVec) {
-    int sizePartVec = 0, flag = 0;
+    int shift = 0;
     int s = static_cast<int>(sizeof(int));
 #pragma omp parallel shared(sortVec, sizeVec)
     {
@@ -142,14 +142,14 @@ void signedRadixSortOmp(int* sortVec, int sizeVec) {
         {
             for (int i = 0; i < sizePartVec; i++)
                 sortVec[i] = localInVec[i];
-            flag++;
+            shift++;
         }
 #pragma omp barrier
 #pragma omp critical
         if (threadId != 0) {
-            mergeOrderVec(sortVec, flag * sizePartVec + remainder,
+            mergeOrderVec(sortVec, shift * sizePartVec + remainder,
         localInVec, sizePartVec);
-            flag++;
+            shift++;
         }
         delete[] localInVec;
     }
