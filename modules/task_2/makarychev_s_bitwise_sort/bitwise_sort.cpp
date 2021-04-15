@@ -1,8 +1,9 @@
 // Copyright 2021 Makarychev Sergey
-#include "../../../modules/task_2/makarychev_s_bitwise_sort/bitwise_sort.h"
 #include <omp.h>
-#include <vector>
 #include <random>
+#include <algorithm>
+#include <vector>
+#include "../../../modules/task_2/makarychev_s_bitwise_sort/bitwise_sort.h"
 
 std::vector<int> getRandomVector(int sizeVec) {
     if (sizeVec < 0)
@@ -45,7 +46,8 @@ void mergeOrderVec(int* vec1, int size1,  int* vec2, int size2) {
     delete[] resVec;
 }
 
-void signedRadix(int byteNumber, int sizeVec, int* sourceVec, int* destVec, int* count) {
+void signedRadix(int byteNumber, int sizeVec, int* sourceVec,
+int* destVec, int* count) {
   int sum = 0;
   int* countPointer;
   if (byteNumber == sizeof(int) - 1) {
@@ -121,7 +123,8 @@ void signedRadixSortOmp(int* sortVec, int sizeVec) {
         int* localOutVec = new int[sizePartVec];
         int* localInVec = new int[sizePartVec];
         int j = 0;
-        for (int i = threadId * sizePartVec + remainder; i < (threadId + 1) * sizePartVec + remainder; i++, j++) {
+        for (int i = threadId * sizePartVec + remainder;
+        i < (threadId + 1) * sizePartVec + remainder; i++, j++) {
             localInVec[j] = sortVec[i];
         }
 
@@ -141,11 +144,11 @@ void signedRadixSortOmp(int* sortVec, int sizeVec) {
                 sortVec[i] = localInVec[i];
             flag++;
         }
-        
 #pragma omp barrier
 #pragma omp critical
         if (threadId != 0) {
-            mergeOrderVec(sortVec, flag * sizePartVec + remainder, localInVec, sizePartVec);
+            mergeOrderVec(sortVec, flag * sizePartVec + remainder,
+        localInVec, sizePartVec);
             flag++;
         }
         delete[] localInVec;
