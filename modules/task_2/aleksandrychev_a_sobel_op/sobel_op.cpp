@@ -44,22 +44,24 @@ Matrix sobel_op(const Matrix& image, int rows, int cols) {
 
     Matrix Gy = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
 
-    #pragma omp parallel for
-    for (int i = 1; i < rows-1; i++) {
-        for (int j = 1; j < cols-1; j++) {
-            int pixel_x = 0;
-            int pixel_y = 0;
+#pragma omp parallel
+    {
+        #pragma omp parallel for
+        for (int i = 1; i < rows-1; i++) {
+            for (int j = 1; j < cols-1; j++) {
+                int pixel_x = 0;
+                int pixel_y = 0;
 
-            for (int x = 0; x < 3; x++) {
-                for (int y = 0; y < 3; y++) {
-                    pixel_x += res_image[i + x - 1][j + y - 1]*Gx[x][y];
-                    pixel_y += res_image[i + x - 1][j + y - 1]*Gy[x][y];
+                for (int x = 0; x < 3; x++) {
+                    for (int y = 0; y < 3; y++) {
+                        pixel_x += res_image[i + x - 1][j + y - 1]*Gx[x][y];
+                        pixel_y += res_image[i + x - 1][j + y - 1]*Gy[x][y];
+                    }
                 }
+                res_image[i][j] = clamp(sqrt(pixel_x*pixel_x + pixel_y*pixel_y),
+                255, 0);
             }
-            res_image[i][j] = clamp(sqrt(pixel_x*pixel_x + pixel_y*pixel_y),
-            255, 0);
         }
     }
-
     return res_image;
 }
