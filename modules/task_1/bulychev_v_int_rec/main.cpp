@@ -118,10 +118,6 @@ TEST(Integrate_rectangle, Test_int_rec_5) {
     ASSERT_NEAR(ans, ans1, 2000);
 }
 
-TEST(Integrate_rectangle, Test_int_rec_6) {
-
-}
-
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
