@@ -124,7 +124,7 @@ Matrix parallelBlockMatrixMultiplication(const std::vector<double>& A, const std
                 }
             }
         }, i);
-        threads.emplace_back(std::move(thr)); 
+        threads.emplace_back(std::move(thr));
     }
     for (int i = 0; i < threads_count; i++) {
         threads[i].join();

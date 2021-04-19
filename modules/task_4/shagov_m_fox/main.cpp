@@ -1,9 +1,9 @@
 // Copyright 2021 Shagov Maksim
 #include <gtest/gtest.h>
+#include <omp.h>
 #include <vector>
 #include "../../../modules/task_4/shagov_m_fox/fox.h"
 
-#include <omp.h>
 
 TEST(Shagov_Maksim_Std, Test_Create_Random_Matrix) {
     const int count = 10;
