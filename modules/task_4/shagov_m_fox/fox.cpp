@@ -109,7 +109,7 @@ Matrix parallelBlockMatrixMultiplication(const std::vector<double>& A, const std
             auto A1 = A.data();
             auto B1 = B.data();
             auto C1 = result.data();
-            for (int stage = 0; stage < blocks_count; stage++) {
+            for (size_t stage = 0; stage < blocks_count; stage++) {
                 A1 = A.data() + (i1 * cols + ((i1 + stage) % blocks_count)) * block_cols_size;
                 B1 = B.data() + (((i1 + stage) % blocks_count) * cols + j1) * block_cols_size;
                 C1 = result.data() + (i1 * cols + j1) * block_cols_size;
