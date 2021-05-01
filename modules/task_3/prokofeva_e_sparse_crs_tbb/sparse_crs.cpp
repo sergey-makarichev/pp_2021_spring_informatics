@@ -134,7 +134,6 @@ crs_matrix mult_tbb(crs_matrix first, crs_matrix second) {
                     col[k] = row;
                     val[k] = sum;
                 }
-
             }
         });
     init.terminate();
