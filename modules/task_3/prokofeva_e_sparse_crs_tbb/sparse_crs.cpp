@@ -7,8 +7,6 @@
 #include <algorithm>
 #include <iostream>
 
-using namespace tbb;
-
 crs_matrix generate(int size) {
     crs_matrix result;
     result.N = size;
@@ -88,7 +86,6 @@ crs_matrix mult(crs_matrix first, crs_matrix second) {
                 res.values.emplace_back(sum);
                 res.cols.emplace_back(j);
             }
-
         }
         res.row_index.emplace_back(static_cast<int>(res.values.size()));
     }
@@ -105,14 +102,13 @@ crs_matrix mult_tbb(crs_matrix first, crs_matrix second) {
     second = transpose(second);
     int tmp1 = 0;
     res.row_index.emplace_back(tmp1);
-    task_scheduler_init init(8);
+    tbb::task_scheduler_init init(8);
     int grainsize = 10;
-    parallel_for(blocked_range<int>(0, N, grainsize),
-        [&](const blocked_range<int>& r) {
+    tbb::parallel_for(tbb::blocked_range<int>(0, N, grainsize),
+        [&](const tbb::blocked_range<int>& r) {
             vector<int> tmp(N);
             for (int k = r.begin(); k < r.end(); k++) {
-                tmp.assign(N, -1);  
-
+                tmp.assign(N, -1);
                 for (int j = first.row_index[k]; j < first.row_index[k + 1]; j++) {
                     tmp[first.cols[j]] = j;
                 }
@@ -132,7 +128,6 @@ crs_matrix mult_tbb(crs_matrix first, crs_matrix second) {
                     if (sum != 0) {
                         col[k].emplace_back(i);
                         val[k].emplace_back(sum);
-                       
                     }
                 }
                 if (sum.size() != 0) {
