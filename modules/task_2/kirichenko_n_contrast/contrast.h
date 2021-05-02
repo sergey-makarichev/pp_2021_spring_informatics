@@ -13,7 +13,7 @@
 
 using Result = std::vector<int>;
 
-Result RandomM(int l, int k);
+Result RandomI(int l, int k);
 Result Contrast(const Result& rm);
 Result Contrastomp(const Result& rm);
 
