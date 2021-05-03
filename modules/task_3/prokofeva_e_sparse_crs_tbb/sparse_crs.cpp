@@ -17,7 +17,8 @@ crs_matrix generate(int size) {
     for (int i = 0; i < size; i++) {
         result.values.emplace_back(dis(gen));
         result.cols.emplace_back(gen() % size);
-        result.row_index.emplace_back(static_cast<int>(result.values.size()));
+        int size = static_cast<int>(result.values.size());
+        result.row_index.emplace_back(size);
     }
     return result;
 }
@@ -54,7 +55,7 @@ crs_matrix transpose(crs_matrix matrix) {
 crs_matrix mult(crs_matrix first, crs_matrix second) {
     crs_matrix res;
     second = transpose(second);
-    int N = first.N;
+    int N = first.N = res.N;
 
     vector<int> tmp(N);
     int j, n;
@@ -87,7 +88,8 @@ crs_matrix mult(crs_matrix first, crs_matrix second) {
                 res.cols.emplace_back(j);
             }
         }
-        res.row_index.emplace_back(static_cast<int>(res.values.size()));
+        int size = static_cast<int>(res.values.size());
+        res.row_index.emplace_back(size);
     }
     return res;
 }
