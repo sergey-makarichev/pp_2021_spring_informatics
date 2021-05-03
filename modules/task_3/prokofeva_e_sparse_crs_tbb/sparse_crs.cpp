@@ -55,7 +55,7 @@ crs_matrix transpose(crs_matrix matrix) {
 crs_matrix mult(crs_matrix first, crs_matrix second) {
     crs_matrix res;
     second = transpose(second);
-    int N = first.N = res.N;
+    int N = res.N = first.N;
 
     vector<int> tmp(N);
     int j, n;
