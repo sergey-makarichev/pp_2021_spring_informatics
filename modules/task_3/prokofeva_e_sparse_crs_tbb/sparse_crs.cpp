@@ -132,7 +132,7 @@ crs_matrix mult_tbb(crs_matrix first, crs_matrix second) {
                         val[k].emplace_back(sum);
                     }
                 }
-                if (sum.size() != 0) {
+                if (!sum.empty()) {
                     col[k] = row;
                     val[k] = sum;
                 }
