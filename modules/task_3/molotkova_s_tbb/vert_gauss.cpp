@@ -74,8 +74,8 @@ std::vector<double> gaussFilter(const std::vector<double>& matrix, int rows, int
       }
       res = clamp(res, 255, 0);
       resultMatrix[x * cols + y] = res;
-    };
-  };
+    }
+  }
   return resultMatrix;
 }
 
@@ -84,7 +84,7 @@ std::vector<double> gaussFilter_par(const std::vector<double>& matrix, int rows,
   std::vector<double> resultMatrix(rows * cols);
   const unsigned int size = 2 * radius + 1;
   std::vector<double> kernel = gaussKernel(radius, sigma);
-      tbb::parallel_for (0, rows, [&](int x) {
+      tbb::parallel_for(0, rows, [&](int x) {
           // tbb::parallel_for (0, cols, [&](int y) {
           for (int y = 0; y < cols; y++) {
           double res = 0;
@@ -100,7 +100,7 @@ std::vector<double> gaussFilter_par(const std::vector<double>& matrix, int rows,
           res = clamp(res, 255, 0);
           resultMatrix[x * cols + y] = res;
         // });
-          };
+          }
       });
   return resultMatrix;
   }

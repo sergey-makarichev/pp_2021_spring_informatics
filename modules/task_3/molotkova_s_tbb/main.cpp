@@ -8,8 +8,6 @@
 
 #include "./vert_gauss.h"
 
-using namespace tbb;
-
 TEST(Matrix_testing, invalid_argument1) {
   int rows = 0;
   int cols = 0;
@@ -117,7 +115,7 @@ TEST(Gauss_filter, 100x1500) {
   time.first = tbb::tick_count::now();
 
   auto matrix_thr = gaussFilter_par(matrix, rows, cols, 1, 5);
-  
+
   time.second = tbb::tick_count::now();
   std::cout << "Parallel " << (time.second - time.first).seconds() << std::endl;
   ASSERT_EQ(matrix_seq, matrix_thr);
