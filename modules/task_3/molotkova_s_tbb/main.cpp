@@ -122,8 +122,8 @@ TEST(Gauss_filter, 100x1500) {
 }
 
 TEST(Gauss_filter, 15000x10000) {
-  int rows = 15000;
-  int cols = 10000;
+  int rows = 1500;
+  int cols = 1000;
   auto rand_matrix = matrixCreation(rows, cols);
   auto matrix = transpose(rand_matrix, rows, cols);
   std::swap(cols, rows);
