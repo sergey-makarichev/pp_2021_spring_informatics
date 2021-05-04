@@ -1,5 +1,4 @@
 // Copyright 2021 Belik Julia
-#include <thread>
 #include <vector>
 #include <string>
 #include <random>
@@ -9,6 +8,7 @@
 #include <utility>
 #include <iostream>
 #include "../../../modules/task_4/belik_j_radix_sort/RadixSortB.h"
+#include "../../../3rdparty/unapproved/unapproved.h"
 void RadixSort(double* vec, size_t len, double* vec2) {
     double* vec1 = new double[len];
     for (size_t i = 0; i < len; i++)
@@ -45,7 +45,7 @@ void RadixSort(double* vec, size_t len, double* vec2) {
             vec2[offset[bvec[8 * i + 7]]++] = vec1[i];
         }
     }
-    delete vec1;
+    delete[] vec1;
 }
 std::vector<double> Vector(size_t n, double a, double b) {
     std::mt19937 gen;
