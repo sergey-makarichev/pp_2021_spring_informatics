@@ -60,7 +60,7 @@ std::vector<double> MergeBatcherPar(std::vector<double> vec, size_t size, int th
     const size_t len = size / thr;
     size_t* lens = new size_t[thr];
     double* vectmp = new double[size];
-    for (int j = 0; j < size; j++)
+    for (size_t j = 0; j < size; j++)
         vectmp[j] = vec[j];
     for (int j = 0; j < thr; j++)
         lens[j] = len;
@@ -133,7 +133,7 @@ std::vector<double> MergeBatcherPar(std::vector<double> vec, size_t size, int th
         for (auto& t : threadsm)
             t.join();
         if (h != nummerge - 1) {
-            for (int j = 0; j < size; j++)
+            for (size_t j = 0; j < size; j++)
                 vectmp[j] = reztmp[j];
         }
         nt /= 2;
@@ -144,7 +144,7 @@ std::vector<double> MergeBatcherPar(std::vector<double> vec, size_t size, int th
     }
     delete[] lens;
     delete[] offsets;
-    for (int j = 0; j < size; j++)
+    for (size_t j = 0; j < size; j++)
         vec[j] = vectmp[j];
     delete[] vectmp;
     delete[] reztmp;
@@ -154,7 +154,7 @@ std::vector<double> MergeBatcherSeq(std::vector<double> vec, size_t size, int th
     const size_t len = size / thr;
     size_t* lens = new size_t[thr];
     double* vectmp = new double[size];
-    for (int j = 0; j < size; j++)
+    for (size_t j = 0; j < size; j++)
         vectmp[j] = vec[j];
     for (int j = 0; j < thr; j++)
         lens[j] = len;
@@ -209,7 +209,7 @@ std::vector<double> MergeBatcherSeq(std::vector<double> vec, size_t size, int th
             }
         }
         if (h != nummerge - 1) {
-            for (int j = 0; j < size; j++)
+            for (size_t j = 0; j < size; j++)
                 vectmp[j] = reztmp[j];
         }
         nt /= 2;
@@ -220,7 +220,7 @@ std::vector<double> MergeBatcherSeq(std::vector<double> vec, size_t size, int th
     }
     delete[] lens;
     delete[] offsets;
-    for (int j = 0; j < size; j++)
+    for (size_t j = 0; j < size; j++)
         vec[j] = vectmp[j];
     delete[] vectmp;
     delete[] reztmp;
