@@ -36,6 +36,7 @@ void printMatrix(Matrix img, int rows, int cols) {
     std::cout << std::endl;
 }
 
+// main function
 Matrix sobel_op(const Matrix& image, int rows, int cols) {
     Matrix res_image = image;
 
