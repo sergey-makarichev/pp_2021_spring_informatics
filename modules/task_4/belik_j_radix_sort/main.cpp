@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include "./RadixSortB.h"
+#include "../../../3rdparty/unapproved/unapproved.h"
 
 TEST(Radix_Sort_Merge_Batcher, Test_Sort) {
     std::vector<double> vec;
