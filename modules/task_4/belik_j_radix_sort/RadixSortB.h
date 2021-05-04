@@ -5,7 +5,7 @@
 #include <vector>
 
 void RadixSort(double* vec, size_t len, double* vec2);
-std::vector<double> Vector(long int n, double a, double b);
+std::vector<double> Vector(size_t n, double a, double b);
 std::vector<double> MergeBatcherPar(std::vector<double> vec, size_t size, int thr);
 std::vector<double> MergeBatcherSeq(std::vector<double> vec, size_t size, int thr);
 void Shuffle(double* vec, size_t len, double* vec2);

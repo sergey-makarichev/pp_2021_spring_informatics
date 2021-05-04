@@ -1,6 +1,5 @@
 // Copyright 2021 Belik Julia
 #include <gtest/gtest.h>
-#include <thread>
 #include <vector>
 #include <numeric>
 #include <algorithm>
