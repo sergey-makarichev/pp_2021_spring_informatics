@@ -99,12 +99,10 @@ crs_matrix mult_tbb(crs_matrix first, crs_matrix second) {
     int N = res.N = first.N;
     vector<vector<double>> val(N);
     vector<vector<int>> col(N);
-    vector<double> sum;
-    vector<int> row;
     second = transpose(second);
     int tmp1 = 0;
     res.row_index.emplace_back(tmp1);
-    tbb::task_scheduler_init init(8);
+    tbb::task_scheduler_init init();
     int grainsize = 10;
     tbb::parallel_for(tbb::blocked_range<int>(0, N, grainsize),
         [&](const tbb::blocked_range<int>& r) {
@@ -132,13 +130,8 @@ crs_matrix mult_tbb(crs_matrix first, crs_matrix second) {
                         val[k].emplace_back(sum);
                     }
                 }
-                if (!sum.empty()) {
-                    col[k] = row;
-                    val[k] = sum;
-                }
             }
         });
-    init.terminate();
     for (int i = 0; i < N; ++i) {
         int size = static_cast<int>(col[i].size());
         res.row_index.emplace_back(res.row_index.back() + size);
