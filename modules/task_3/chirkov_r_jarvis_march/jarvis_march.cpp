@@ -1,8 +1,6 @@
 // Copyright 2021 Chirkov Roman
 #include "../../../modules/task_3/chirkov_r_jarvis_march/jarvis_march.h"
 
-//#include <omp.h>
-
 #include <cmath>
 #include <ctime>
 #include <random>
@@ -11,7 +9,8 @@
 #include "tbb/parallel_for.h"
 #include "tbb/parallel_reduce.h"
 #include "tbb/task_scheduler_init.h"
-//#include "tbb/tick_count.h"  // std::min crash
+
+// #include "tbb/tick_count.h"  // std::min crash
 
 #define PI 3.14159265
 
@@ -45,7 +44,7 @@ std::vector<Point> makePointsArray(int amount) {
   gen.seed(static_cast<unsigned int>(time(0)));
 
   for (int i = 0; i < amount; i++) {
-    points.push_back(Point(gen() % 10000, gen() % 10000));
+    points.push_back(Point(gen() % 1000, gen() % 1000));
   }
   return points;
 }
@@ -57,7 +56,6 @@ std::vector<Point> makePointsArrayCircle(int amount) {
   std::mt19937 gen;
   gen.seed(static_cast<unsigned int>(time(0)));
 
-  //#pragma omp parallel for
   for (int i = 0; i < amount; i++) {
     int ro, phi;
     ro = gen() % 500;
@@ -200,7 +198,7 @@ std::vector<int> ParallelJarvis(std::vector<Point> points) {
           }
           return loc_next;
         },
-        [&points, cur](int indexA, int indexB) -> int {
+        [&](int indexA, int indexB) -> int {
           if (points[indexA] == points[indexB]) {
             return indexA < indexB ? indexA : indexB;
           }
@@ -219,8 +217,6 @@ std::vector<int> ParallelJarvis(std::vector<Point> points) {
     // tsi.terminate();
     cur = next;
     hull.push_back(next);
-
   } while (cur != index);
-
   return hull;
 }

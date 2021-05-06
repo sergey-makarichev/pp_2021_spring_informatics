@@ -61,7 +61,7 @@ TEST(jarvis_march_TBB, generationCircle_and_Jarvis) {
 }
 
 TEST(jarvis_march_TBB, seq_and_par_compare) {
-  std::vector<Point> points = makePointsArray(100000);
+  std::vector<Point> points = makePointsArray(10000);
   tbb::tick_count start, stop;
   std::vector<int> seqHull, parHull;
 
@@ -79,7 +79,7 @@ TEST(jarvis_march_TBB, seq_and_par_compare) {
 }
 
 TEST(jarvis_march_TBB, circle_seq_and_par_compare) {
-  std::vector<Point> points = makePointsArrayCircle(100000);
+  std::vector<Point> points = makePointsArrayCircle(10000);
   tbb::tick_count start, stop;
   std::vector<int> seqHull, parHull;
 
