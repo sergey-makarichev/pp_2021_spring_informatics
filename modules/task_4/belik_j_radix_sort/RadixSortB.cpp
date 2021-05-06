@@ -75,6 +75,10 @@ std::vector<double> MergeBatcherPar(std::vector<double> vec, size_t size, int th
         RadixSort(vectmp, size, reztmp);
         for (size_t j = 0; j < size; j++)
             rez[j] = reztmp[j];
+        delete[] lens;
+        delete[] offsets;
+        delete[] vectmp;
+        delete[] reztmp;
         return rez;
     }
     std::vector<std::thread> threadssort;
@@ -165,14 +169,19 @@ std::vector<double> MergeBatcherSeq(std::vector<double> vec, size_t size, int th
         offsets[j] = offsets[j - 1] + lens[j - 1];
     std::vector<double> rez(size);
     double* reztmp = new double[size];
+    if (thr == 1) {
+        RadixSort(vectmp, size, reztmp);
+        for (size_t j = 0; j < size; j++)
+            rez[j] = reztmp[j];
+        delete[] lens;
+        delete[] offsets;
+        delete[] vectmp;
+        delete[] reztmp;
+        return rez;
+    }
     for (int i = 0; i < thr; i++) {
         RadixSort(vectmp + offsets[i], lens[i], reztmp + offsets[i]);
-        if (thr > 1) {
-            Shuffle(reztmp + offsets[i], lens[i], vectmp + offsets[i]);
-        } else {
-            for (size_t j = 0; j < lens[i]; j++)
-                vectmp[offsets[i] + j] = reztmp[offsets[i] + j];
-        }
+        Shuffle(reztmp + offsets[i], lens[i], vectmp + offsets[i]);
     }
     int nt = thr;
     int mergecount = 2, offset = 1;
