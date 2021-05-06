@@ -20,6 +20,8 @@ TEST(Radix_Sort_Merge_Batcher, Test_Sort) {
     for (int i = 0; i < n; i++)
         v1[i] = tmp2[i];
     std::sort(vec.begin(), vec.end());
+    delete[] tmp1;
+    delete[] tmp2;
     ASSERT_EQ(v1, vec);
 }
 TEST(Radix_Sort_Merge_Batcher, Test_Sort_Par_1thr) {
