@@ -93,6 +93,7 @@ std::vector<point> Paral_Jarvis_alg(const mat &img, int size, int thread) {
                 return loc_arg;
             },
         [](arg a, arg b) {
+        	arg fail;
             if ( std::abs(a.min - b.min) < 1e-5 ) {
                 if ( a.dist > b.dist ) {
                     return a;
@@ -104,6 +105,7 @@ std::vector<point> Paral_Jarvis_alg(const mat &img, int size, int thread) {
             } else if ( b.min < a.min ) {
                 return b;
             }
+            return fail;
         });
         res.push_back(a[glob.num]);
         prev = cur;
