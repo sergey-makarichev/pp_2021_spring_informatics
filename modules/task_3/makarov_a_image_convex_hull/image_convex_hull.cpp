@@ -1,14 +1,17 @@
 // Copyright 2021 Makarov Alexander
-#include "../../../modules/task_2/makarov_a_image_convex_hull/image_convex_hull.h"
-
-#include "tbb/blocked_range.h"
-#include "tbb/parallel_for.h"
+#include "../../../modules/task_3/makarov_a_image_convex_hull/image_convex_hull.h"
 
 #include <utility>
 #include <stack>
 #include <iostream>
 #include <list>
 #include <algorithm>
+
+#include "tbb/blocked_range.h"
+#include "tbb/parallel_for.h"
+#include "tbb/parallel_reduce.h"
+
+#define PAR_THRESHOLD 1000
 
 std::vector<int> mark_components(const std::vector<int>& bin_image,
                                  int w, int h) {
@@ -63,19 +66,56 @@ int orientation(std::pair<int, int> c, std::pair<int, int> a,
     // 1 - b on left side ca, 2 - b on rigth side ca
 }
 
+class FindLeft {
+    const std::vector<std::pair<int, int> >& component;
+    const int curr;
+    int next;
+
+ public:
+    explicit FindLeft(const std::vector<std::pair<int, int> >& i_component,
+                               int i_curr, int i_next): component(i_component),
+        curr(i_curr), next(i_next) {}
+    FindLeft(const FindLeft& f, tbb::split): component(f.component),
+                                                  curr(f.curr), next(f.next) {}
+
+    void operator() (const tbb::blocked_range<int>& r) {
+        int begin = r.begin(), end = r.end();
+        for (int i = begin; i != end; i++) {
+            int orient = orientation(component[curr], component[next],
+                                                 component[i]);
+            if (orient == 1)
+                next = i;
+        }
+    }
+
+    void join(const FindLeft &reduct) {
+        int orient = orientation(component[curr], component[next],
+                                             component[reduct.next]);
+        if (orient == 1) next = reduct.next;
+    }
+
+    int Result() {
+        return next;
+    }
+};
+
 class JarvisAlgorithm {
     const std::vector<std::list<std::pair<int, int> > > &components;
-    std::vector<std::list<std::pair<int, int> > >& result;
-public:
-    JarvisAlgorithm(const std::vector<std::list<std::pair<int, int> > > &i_components,
-        std::vector<std::list<std::pair<int, int> > >& i_result): components(i_components), result(i_result) {}
-        
+    std::vector<std::list<std::pair<int, int> > > * const result;
+
+ public:
+    JarvisAlgorithm(
+             const std::vector<std::list<std::pair<int, int> > > &i_components,
+        std::vector<std::list<std::pair<int, int> > > * const i_result):
+                                  components(i_components), result(i_result) {}
+
     void operator() (const tbb::blocked_range<int>& r) const {
         int begin = r.begin(), end = r.end();
         for (int comp_num = begin; comp_num != end; comp_num++) {
-            std::list<std::pair<int, int> > component_list = components[comp_num];
+            std::list<std::pair<int, int> > component_list =
+                                                          components[comp_num];
             if (component_list.size() < 3) {
-                result[comp_num] = component_list;
+                (*result)[comp_num] = component_list;
             } else {
                 std::pair<int, int> start(component_list.front());
                 int start_idx = 0;
@@ -93,15 +133,21 @@ public:
                 int curr = start_idx;
                 int next;
                 do {
-                    result[comp_num].push_back(component[curr]);
+                    (*result)[comp_num].push_back(component[curr]);
                     next = (curr + 1) % n;
-                    for (int i = 0; i < n; i++) {
-                        int orient = orientation(component[curr], component[next],
-                                                                     component[i]);
-                        if (orient == 1)
-                            next = i;
+                    FindLeft f(component, curr, next);
+                    if (component.size() < PAR_THRESHOLD) {
+                        for (int i = 0; i < n; i++) {
+                            int orient = orientation(component[curr],
+                                                component[next], component[i]);
+                            if (orient == 1)
+                                next = i;
+                        }
+                        curr = next;
+                    } else {
+                        tbb::parallel_reduce(tbb::blocked_range<int>(0, n), f);
+                        curr = f.Result();
                     }
-                    curr = next;
                 } while (curr != start_idx);
             }
         }
@@ -124,60 +170,9 @@ std::vector<std::list <std::pair<int, int> > > get_convex_hulls(
         }
     }
     std::vector<std::list<std::pair<int, int> > > result(comp_count);
-
-    tbb::parallel_for(tbb::blocked_range<int>(0, static_cast<int>(components.size())), 
-        JarvisAlgorithm(components, result));
-        
-    /*for (int comp_num = 0; comp_num < static_cast<int>(components.size());
-                                                              comp_num++) {
-        std::list<std::pair<int, int> > component_list =
-                                                components[comp_num];
-        if (component_list.size() < 3) {
-            result[comp_num] = component_list;
-        } else {
-            std::pair<int, int> start(w, h);
-            int start_idx = 0;
-            int n = component_list.size();
-            std::vector<std::pair<int, int> > component(n);
-            int counter_1 = 0;
-            for (auto point : component_list) {
-                component[counter_1] = point;
-                if (point.first < start.first) {
-                    start = point;
-                    start_idx = counter_1;
-                }
-                counter_1++;
-            }
-            int curr = start_idx;
-            int next;
-            do {
-                result[comp_num].push_back(component[curr]);
-                next = (curr + 1) % n;
-                std::vector<int> next_array(threads_count, next);
-                #pragma omp parallel private(thread_num)
-                {
-                    thread_num = omp_get_thread_num();
-                    #pragma omp for
-                    for (int i = 0; i < n; i++) {
-                        int orient = orientation(component[curr],
-                          component[next_array[thread_num]], component[i]);
-                        if (orient == 1)
-                            next_array[thread_num] = i;
-                    }
-                }
-                next = next_array[0];
-                for (int i = 0; i < static_cast<int>(next_array.size());
-                                                                     i++) {
-                    int orient = orientation(component[curr],
-                                component[next], component[next_array[i]]);
-                    if (orient == 1)
-                        next = next_array[i];
-                }
-                curr = next;
-            } while (curr != start_idx);
-        }
-    }*/
-    
+    tbb::parallel_for(tbb::blocked_range<int>(0,
+                                          static_cast<int>(components.size())),
+        JarvisAlgorithm(components, &result));
     return result;
 }
 

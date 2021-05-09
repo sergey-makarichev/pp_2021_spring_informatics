@@ -1,6 +1,6 @@
 // Copyright 2021 Makarov Alexander
-#ifndef MODULES_TASK_2_MAKAROV_A_IMAGE_CONVEX_HULL_IMAGE_CONVEX_HULL_H_
-#define MODULES_TASK_2_MAKAROV_A_IMAGE_CONVEX_HULL_IMAGE_CONVEX_HULL_H_
+#ifndef MODULES_TASK_3_MAKAROV_A_IMAGE_CONVEX_HULL_IMAGE_CONVEX_HULL_H_
+#define MODULES_TASK_3_MAKAROV_A_IMAGE_CONVEX_HULL_IMAGE_CONVEX_HULL_H_
 
 #include <vector>
 #include <list>
@@ -14,4 +14,4 @@ std::vector<std::list <std::pair<int, int> > > get_convex_hulls(
 std::vector<std::list <std::pair<int, int> > > get_convex_hulls_seq(
                           const std::vector<int>& marked_image, int w, int h);
 
-#endif  // MODULES_TASK_2_MAKAROV_A_IMAGE_CONVEX_HULL_IMAGE_CONVEX_HULL_H_
+#endif  // MODULES_TASK_3_MAKAROV_A_IMAGE_CONVEX_HULL_IMAGE_CONVEX_HULL_H_

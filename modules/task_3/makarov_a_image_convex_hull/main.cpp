@@ -1,12 +1,11 @@
 // Copyright 2021 Makarov Alexander
 
-#include "tbb/tick_count.h"
-
 #include <gtest/gtest.h>
 #include <vector>
 #include <iostream>
 #include <random>
 
+#include "tbb/tick_count.h"
 #include "./image_convex_hull.h"
 
 const int prm_size = 15;
@@ -315,7 +314,7 @@ TEST(Components, Test_700x700_worst) {
     convex_hulls_seq = get_convex_hulls_seq(marked_image, w, h);
     end_time = tbb::tick_count::now();
     seq_time = end_time - start_time;
-    
+
     start_time = tbb::tick_count::now();
     convex_hulls_par = get_convex_hulls(marked_image, w, h);
     end_time = tbb::tick_count::now();
