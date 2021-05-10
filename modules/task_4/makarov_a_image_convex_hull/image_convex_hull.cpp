@@ -99,11 +99,14 @@ void jarvis_algorithm(const std::list<std::pair<int, int> >* components, const i
 
 void find_left(const std::pair<int, int>* component, std::pair<int, int> curr_point, int start, int chunk_size, int * const result) {
     int next = start;
+    std::pair<int, int> next_point(component[start]);
     for (int i = 0; i < chunk_size; i++) {
-        int orient = orientation(curr_point, component[next],
+        int orient = orientation(curr_point, next_point,
                                                      component[i]);
-        if (orient == 1)
+        if (orient == 1) {
+            next_point = component[i];
             next = i;
+        }
     }
     *result = next;
 }
