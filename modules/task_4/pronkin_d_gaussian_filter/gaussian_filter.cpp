@@ -7,6 +7,7 @@
 #include <random>
 #include <ctime>
 #include <cmath>
+#include <climits>
 #include "../../../modules/task_4/pronkin_d_gaussian_filter/gaussian_filter.h"
 #include "../../../3rdparty/unapproved/unapproved.h"
 
