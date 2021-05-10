@@ -3,13 +3,12 @@
 #define _USE_MATH_DEFINES
 
 #include <vector>
-#include <thread>
 #include <stdexcept>
 #include <random>
 #include <ctime>
 #include <cmath>
-#include <chrono>
 #include "../../../modules/task_4/pronkin_d_gaussian_filter/gaussian_filter.h"
+#include "../../../3rdparty/unapproved/unapproved.h"
 
 std::vector<double> getRandomImage(int height, int width) {
     if (height <= 0 || width <= 0) {
