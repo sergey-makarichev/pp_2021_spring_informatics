@@ -71,9 +71,10 @@ void jarvis_algorithm(const std::list<std::pair<int, int> >* components, const i
             int start_idx = 0;
             int n = component_list.size();
             std::vector<std::pair<int, int> > component(n);
+            std::pair<int, int>* comp_ptr = component.data();
             int counter_1 = 0;
             for (auto point : component_list) {
-                component[counter_1] = point;
+                comp_ptr[counter_1] = point;
                 if (point.first < start.first) {
                     start = point;
                     start_idx = counter_1;
@@ -83,13 +84,17 @@ void jarvis_algorithm(const std::list<std::pair<int, int> >* components, const i
             int curr = start_idx;
             int next;
             do {
-                result[comp_num].push_back(component[curr]);
+                std::pair<int, int> curr_point = comp_ptr[curr];
+                result[comp_num].push_back(comp_ptr[curr]);
                 next = (curr + 1) % n;
+                std::pair<int, int> next_point = comp_ptr[next];
                 for (int i = 0; i < n; i++) {
-                    int orient = orientation(component[curr], component[next],
-                                                                 component[i]);
-                    if (orient == 1)
+                    int orient = orientation(curr_point, next_point,
+                                                                 comp_ptr[i]);
+                    if (orient == 1) {
+                        next_point = comp_ptr[i];
                         next = i;
+                    }
                 }
                 curr = next;
             } while (curr != start_idx);
@@ -207,9 +212,10 @@ std::vector<std::list <std::pair<int, int> > > get_convex_hulls_seq(
             int start_idx = 0;
             int n = component_list.size();
             std::vector<std::pair<int, int> > component(n);
+            std::pair<int, int>* comp_ptr = component.data();
             int counter_1 = 0;
             for (auto point : component_list) {
-                component[counter_1] = point;
+                comp_ptr[counter_1] = point;
                 if (point.first < start.first) {
                     start = point;
                     start_idx = counter_1;
@@ -219,13 +225,17 @@ std::vector<std::list <std::pair<int, int> > > get_convex_hulls_seq(
             int curr = start_idx;
             int next;
             do {
-                result[comp_num].push_back(component[curr]);
+                std::pair<int, int> curr_point(comp_ptr[curr]);
+                result[comp_num].push_back(curr_point);
                 next = (curr + 1) % n;
+                std::pair<int, int> next_point(comp_ptr[next]);
                 for (int i = 0; i < n; i++) {
-                    int orient = orientation(component[curr], component[next],
-                                                                 component[i]);
-                    if (orient == 1)
+                    int orient = orientation(curr_point, next_point,
+                                                                 comp_ptr[i]);
+                    if (orient == 1) {
+                        next_point = comp_ptr[i];
                         next = i;
+                    }
                 }
                 curr = next;
             } while (curr != start_idx);
