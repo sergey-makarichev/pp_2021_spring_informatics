@@ -11,7 +11,7 @@
 
 std::vector<int> mark_components(const std::vector<int>& bin_image,
                                  int w, int h) {
-    int components_count = 1;  // plus background
+    int components_count = 1;  // + background
     std::vector<int> result(bin_image);
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
