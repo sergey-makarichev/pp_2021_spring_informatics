@@ -5,7 +5,7 @@
 #include <vector>
 #include "./RadixSortTbb.h"
 
-TEST(Test_Omp, Size_5_Without_Random) {
+TEST(Test_Tbb, Size_5_Without_Random) {
   int size = 5;
   double* vec = new double[size] {5.21, -8.652,
   26.32, 3.289, -14.842};
@@ -18,7 +18,7 @@ TEST(Test_Omp, Size_5_Without_Random) {
   delete[] vec;
 }
 
-TEST(Test_Omp, Size_1000_Random_Pos_And_Neg) {
+TEST(Test_Tbb, Size_1000_Random_Pos_And_Neg) {
   int size = 1000;
   std::vector<double> vec = createVector(size, -1000.0, 1000.0);
   double* tmp = new double[size];
@@ -29,7 +29,7 @@ TEST(Test_Omp, Size_1000_Random_Pos_And_Neg) {
   delete[] tmp;
 }
 
-TEST(Test_Omp, Size_1000_Batcher_Seq_Border_20) {
+TEST(Test_Tbb, Size_1000_Batcher_Seq_Border_20) {
   int size = 1000;
   std::vector<double> vec = createVector(size, -1000.0, 1000.0);
   bool result = false;
@@ -38,7 +38,7 @@ TEST(Test_Omp, Size_1000_Batcher_Seq_Border_20) {
   ASSERT_EQ(true, result);
 }
 
-TEST(Test_Omp, Size_100_Batcher_Omp_1thr_Border_25) {
+TEST(Test_Tbb, Size_100_Batcher_Tbb_1thr_Border_25) {
   int size = 100;
   int thr = 1;
   std::vector<double> vec = createVector(size, -100.0, 100.0);
@@ -48,7 +48,7 @@ TEST(Test_Omp, Size_100_Batcher_Omp_1thr_Border_25) {
   ASSERT_EQ(true, result);
 }
 
-TEST(Test_Omp, Size_100_Batcher_Omp_4thr_Border_25) {
+TEST(Test_Tbb, Size_100_Batcher_Tbb_4thr_Border_25) {
   int size = 100;
   int thr = 4;
   std::vector<double> vec = createVector(size, -1000.0, 1000.0);
@@ -58,7 +58,7 @@ TEST(Test_Omp, Size_100_Batcher_Omp_4thr_Border_25) {
   ASSERT_EQ(true, result);
 }
 
-TEST(Test_Omp, Size_1000_Batcher_Omp_4thr_Border_60) {
+TEST(Test_Tbb, Size_1000_Batcher_Tbb_4thr_Border_60) {
   int size = 1000;
   int thr = 4;
   std::vector<double> vec = createVector(size, -1000.0, 1000.0);
@@ -68,7 +68,7 @@ TEST(Test_Omp, Size_1000_Batcher_Omp_4thr_Border_60) {
   ASSERT_EQ(true, result);
 }
 
-TEST(Test_Omp, Test_Equality_Seq_Par_10000) {
+TEST(Test_Tbb, Test_Equality_Seq_Par_10000) {
   int size = 10000;
   int thr = 6;
   std::vector<double> v1 = createVector(size, -1000.0, 1000.0);
@@ -86,7 +86,7 @@ TEST(Test_Omp, Test_Equality_Seq_Par_10000) {
   ASSERT_EQ(v1, v2);
 }
 
-TEST(Test_Omp, Test_Equality_Seq_Par_20000) {
+TEST(Test_Tbb, Test_Equality_Seq_Par_20000) {
   int size = 20000;
   int thr = 6;
   std::vector<double> v1 = createVector(size, -1000.0, 1000.0);
@@ -104,7 +104,7 @@ TEST(Test_Omp, Test_Equality_Seq_Par_20000) {
   ASSERT_EQ(v1, v2);
 }
 
-TEST(Test_Omp, Test_Equality_Seq_Par_30000) {
+TEST(Test_Tbb, Test_Equality_Seq_Par_30000) {
   int size = 30000;
   int thr = 6;
   std::vector<double> v1 = createVector(size, -1000.0, 1000.0);
@@ -122,7 +122,7 @@ TEST(Test_Omp, Test_Equality_Seq_Par_30000) {
   ASSERT_EQ(v1, v2);
 }
 
-TEST(Test_Omp, Test_Equality_Seq_Par_50000) {
+TEST(Test_Tbb, Test_Equality_Seq_Par_50000) {
   int size = 50000;
   int thr = 6;
   std::vector<double> v1 = createVector(size, -1000.0, 1000.0);
@@ -140,7 +140,7 @@ TEST(Test_Omp, Test_Equality_Seq_Par_50000) {
   ASSERT_EQ(v1, v2);
 }
 
-TEST(Test_Omp, Test_Equality_Seq_Par_100000) {
+TEST(Test_Tbb, Test_Equality_Seq_Par_100000) {
   int size = 100000;
   int thr = 6;
   std::vector<double> v1 = createVector(size, -1000.0, 1000.0);
