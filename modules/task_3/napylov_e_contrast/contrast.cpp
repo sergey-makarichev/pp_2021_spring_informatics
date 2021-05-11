@@ -1,4 +1,4 @@
-// // Copyright 2021 Napylov Evgenii
+// Copyright 2021 Napylov Evgenii
 #include <tbb/tbb.h>
 #include <iostream>
 #include <random>
