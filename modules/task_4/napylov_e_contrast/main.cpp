@@ -49,12 +49,12 @@ TEST(Linear_stretch_contrast_STD, Seq_vs_Std) {
     double t_seq = static_cast<double>(t2 - t1) / CLOCKS_PER_SEC;
 
     t1 = clock();
-    VecImage res_omp = add_contrast_std(image);
+    VecImage res_std = add_contrast_std(image);
     t2 = clock();
     double t_std = static_cast<double>(t2 - t1) / CLOCKS_PER_SEC;
 
     for (size_t i = 0; i < image.size(); i++) {
-        ASSERT_EQ(res_seq[i], res_omp[i]);
+        ASSERT_EQ(res_seq[i], res_std[i]);
     }
 
     std::cout << "seq_t: " << t_seq << "\nstd_t: " << t_std << std::endl;
