@@ -1,8 +1,8 @@
 // Copyright 2021 Zaitsev Andrey
 #include <gtest/gtest.h>
 #include <tbb/tick_count.h>
-#include <vector>
 #include <iostream>
+#include <vector>
 #include "./RadixSortTbb.h"
 
 TEST(Test_Omp, Size_5_Without_Random) {
