@@ -102,10 +102,10 @@ void jarvis_algorithm(const std::list<std::pair<int, int> >* components, const i
     } 
 }
 
-void find_left(const std::pair<int, int>* component, std::pair<int, int> curr_point, int start, int chunk_size, int * const result) {
-    int next = start;
-    std::pair<int, int> next_point(component[start]);
-    for (int i = 0; i < chunk_size; i++) {
+void find_left(const std::pair<int, int>* component, std::pair<int, int> curr_point, int start, int end, int * const result) {
+    int next = *result;
+    std::pair<int, int> next_point(component[next]);
+    for (int i = start; i < end; i++) {
         int orient = orientation(curr_point, next_point,
                                                      component[i]);
         if (orient == 1) {
@@ -171,13 +171,28 @@ std::vector<std::list <std::pair<int, int> > > get_convex_hulls(
                 }
                 int curr = start_idx;
                 int next;
+                int sub_chunk_size = n / (cores_count - 1);
+                int main_chunk_size = n % (cores_count - 1);
                 do {
                     std::pair<int, int> curr_point(component[curr]);
                     result[comp_num].push_back(curr_point);
                     next = (curr + 1) % n;
-                    
-                    find_left(component.data(), curr_point, next, n, &next);
-                    
+                    std::vector<int> next_array(cores_count, next);
+                    /*std::vector<std::thread> thrds(cores_count - 1);
+                    for (int i = 0; i < cores_count; i++) {
+                        thrds[i] = std::thread(find_left, component.data(), curr_point, i * );
+                    }*/
+                    find_left(component.data(), curr_point, 0, n, next_array.data() + (cores_count - 1));
+                    /*for (int i = 0; i < cores_count; i++) {
+                        thrds[i].join();
+                    }*/
+                    //next = next_array[cores_count - 1];
+                    for (int i = 0; i < cores_count; i++) {
+                        int orient = orientation(curr_point, component[next], component[next_array[i]]);
+                        if (orient == 1) {
+                            next = next_array[i];
+                        }
+                    }
                     curr = next;
                 } while (curr != start_idx);
             }
