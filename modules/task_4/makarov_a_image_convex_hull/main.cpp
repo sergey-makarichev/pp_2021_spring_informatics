@@ -1,10 +1,11 @@
 // Copyright 2021 Makarov Alexander
 
+#include <time.h>
+
 #include <gtest/gtest.h>
 #include <vector>
 #include <iostream>
 #include <random>
-#include <chrono>
 
 #include "./image_convex_hull.h"
 
@@ -219,22 +220,23 @@ TEST(Components, Test_100x100_prim_image) {
     std::vector<std::list <std::pair<int, int> > > convex_hulls_seq,
                                                    convex_hulls_par;
 
-    auto start_time = std::chrono::high_resolution_clock::now();
+    clock_t start_time, end_time;
+    start_time = clock();
     convex_hulls_seq = get_convex_hulls_seq(marked_image, w * prm_size,
                                                           h * prm_size);
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto seq_time = 
-       std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    end_time = clock();
+    double seq_time = (static_cast<double>(end_time - start_time)) /
+                                                                CLOCKS_PER_SEC;
 
-    start_time = std::chrono::high_resolution_clock::now();
+    start_time = clock();
     convex_hulls_par = get_convex_hulls(marked_image, w * prm_size,
                                                       h * prm_size);
-    end_time = std::chrono::high_resolution_clock::now();
-    auto par_time = 
-       std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    end_time = clock();
+    double par_time = (static_cast<double>(end_time - start_time)) /
+                                                                CLOCKS_PER_SEC;
 
-    std::cout << "Seq time: " << seq_time.count() / 1000. << " s" << std::endl;
-    std::cout << "Par time: " << par_time.count() / 1000. << " s" << std::endl;
+    std::cout << "Seq time: " << seq_time << " s" << std::endl;
+    std::cout << "Par time: " << par_time << " s" << std::endl;
 
     ASSERT_EQ(convex_hulls_par, convex_hulls_seq);
     ASSERT_EQ(convex_hulls_par, expected_hulls);
@@ -268,22 +270,23 @@ TEST(Components, Test_200x200_prim_image) {
     std::vector<std::list <std::pair<int, int> > > convex_hulls_seq,
                                                    convex_hulls_par;
 
-    auto start_time = std::chrono::high_resolution_clock::now();
+    clock_t start_time, end_time;
+    start_time = clock();
     convex_hulls_seq = get_convex_hulls_seq(marked_image, w * prm_size,
                                                           h * prm_size);
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto seq_time = 
-       std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    end_time = clock();
+    double seq_time = (static_cast<double>(end_time - start_time)) /
+                                                                CLOCKS_PER_SEC;
 
-    start_time = std::chrono::high_resolution_clock::now();
+    start_time = clock();
     convex_hulls_par = get_convex_hulls(marked_image, w * prm_size,
                                                       h * prm_size);
-    end_time = std::chrono::high_resolution_clock::now();
-    auto par_time = 
-       std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    end_time = clock();
+    double par_time = (static_cast<double>(end_time - start_time)) /
+                                                                CLOCKS_PER_SEC;
 
-    std::cout << "Seq time: " << seq_time.count() / 1000. << " s" << std::endl;
-    std::cout << "Par time: " << par_time.count() / 1000. << " s" << std::endl;
+    std::cout << "Seq time: " << seq_time << " s" << std::endl;
+    std::cout << "Par time: " << par_time << " s" << std::endl;
 
     ASSERT_EQ(convex_hulls_par, convex_hulls_seq);
     ASSERT_EQ(convex_hulls_par, expected_hulls);
@@ -305,20 +308,22 @@ TEST(Components, Test_700x700_worst) {
     std::vector<std::list <std::pair<int, int> > > convex_hulls_seq,
                                                    convex_hulls_par;
 
-    auto start_time = std::chrono::high_resolution_clock::now();
+    clock_t start_time, end_time;
+    start_time = clock();
     convex_hulls_seq = get_convex_hulls_seq(marked_image, w, h);
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto seq_time = 
-       std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    end_time = clock();
+    double seq_time = (static_cast<double>(end_time - start_time)) /
+                                                                CLOCKS_PER_SEC;
 
-    start_time = std::chrono::high_resolution_clock::now();
-    convex_hulls_par = get_convex_hulls(marked_image, w, h);
-    end_time = std::chrono::high_resolution_clock::now();
-    auto par_time = 
-       std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    start_time = clock();
+    convex_hulls_par = get_convex_hulls(marked_image, w,
+                                                      h);
+    end_time = clock();
+    double par_time = (static_cast<double>(end_time - start_time)) /
+                                                                CLOCKS_PER_SEC;
 
-    std::cout << "Seq time: " << seq_time.count() / 1000. << " s" << std::endl;
-    std::cout << "Par time: " << par_time.count() / 1000. << " s" << std::endl;
+    std::cout << "Seq time: " << seq_time << " s" << std::endl;
+    std::cout << "Par time: " << par_time << " s" << std::endl;
 
     ASSERT_EQ(convex_hulls_par, convex_hulls_seq);
     ASSERT_EQ(convex_hulls_par, expected_hulls);

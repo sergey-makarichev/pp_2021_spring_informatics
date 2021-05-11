@@ -6,7 +6,8 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
-#include <thread>
+
+#include "../../../3rdparty/unapproved/unapproved.h"
 
 std::vector<int> mark_components(const std::vector<int>& bin_image,
                                  int w, int h) {
@@ -61,7 +62,8 @@ int orientation(std::pair<int, int> c, std::pair<int, int> a,
     // 1 - b on left side ca, 2 - b on rigth side ca
 }
 
-void jarvis_algorithm(const std::list<std::pair<int, int> >* components, const int chunk_size, std::list<std::pair<int, int> >* const result) {
+void jarvis_algorithm(const std::list<std::pair<int, int> >* components,
+         const int chunk_size, std::list<std::pair<int, int> >* const result) {
     for (int comp_num = 0; comp_num < chunk_size; comp_num++) {
         std::list<std::pair<int, int> > component_list = components[comp_num];
         if (component_list.size() < 3) {
@@ -99,10 +101,11 @@ void jarvis_algorithm(const std::list<std::pair<int, int> >* components, const i
                 curr = next;
             } while (curr != start_idx);
         }
-    } 
+    }
 }
 
-void find_left(const std::pair<int, int>* component, std::pair<int, int> curr_point, int start, int end, int * const result) {
+void find_left(const std::pair<int, int>* component,
+      std::pair<int, int> curr_point, int start, int end, int * const result) {
     int next = *result;
     std::pair<int, int> next_point(component[next]);
     for (int i = start; i < end; i++) {
@@ -135,7 +138,7 @@ std::vector<std::list <std::pair<int, int> > > get_convex_hulls(
 
     int cores_count = std::thread::hardware_concurrency();
     int components_size = static_cast<int>(components.size());
-    
+
     if (cores_count == 1) {
         jarvis_algorithm(components.data(), components_size, result.data());
     } else if (cores_count < components_size) {
@@ -143,16 +146,22 @@ std::vector<std::list <std::pair<int, int> > > get_convex_hulls(
         int main_chunk_size = components_size % (cores_count - 1);
         std::vector<std::thread> thrds(cores_count - 1);
         for (int i = 0; i < cores_count - 1; i++) {
-            thrds[i] = std::thread(jarvis_algorithm, components.data() + i * sub_chunk_size, sub_chunk_size, result.data() + i * sub_chunk_size);
+            thrds[i] = std::thread(jarvis_algorithm,
+                        components.data() + i * sub_chunk_size, sub_chunk_size,
+                                           result.data() + i * sub_chunk_size);
         }
-        jarvis_algorithm(components.data() + (cores_count - 1) * sub_chunk_size, main_chunk_size, result.data() + (cores_count - 1) * sub_chunk_size);
+        jarvis_algorithm(
+                        components.data() + (cores_count - 1) * sub_chunk_size,
+                                                               main_chunk_size,
+                           result.data() + (cores_count - 1) * sub_chunk_size);
         for (int i = 0; i < cores_count - 1; i++) {
             thrds[i].join();
         }
     } else {
         for (int comp_num = 0; comp_num < static_cast<int>(components.size());
-                                                                      comp_num++) {
-            std::list<std::pair<int, int> > component_list = components[comp_num];
+                                                                  comp_num++) {
+            std::list<std::pair<int, int> > component_list =
+                                                          components[comp_num];
             if (component_list.size() < 3) {
                 result[comp_num] = component_list;
             } else {
@@ -178,17 +187,24 @@ std::vector<std::list <std::pair<int, int> > > get_convex_hulls(
                     result[comp_num].push_back(curr_point);
                     next = (curr + 1) % n;
                     std::vector<int> next_array(cores_count, next);
-                    /*std::vector<std::thread> thrds(cores_count - 1);
-                    for (int i = 0; i < cores_count; i++) {
-                        thrds[i] = std::thread(find_left, component.data(), curr_point, i * );
-                    }*/
-                    find_left(component.data(), curr_point, 0, n, next_array.data() + (cores_count - 1));
-                    /*for (int i = 0; i < cores_count; i++) {
+                    std::vector<std::thread> thrds(cores_count - 1);
+                    for (int i = 0; i < cores_count - 1; i++) {
+                        thrds[i] = std::thread(find_left, component.data(),
+                                                curr_point, i * sub_chunk_size,
+                                                      (i + 1) * sub_chunk_size,
+                                                        next_array.data() + i);
+                    }
+                    std::thread final_thread(find_left, component.data(),
+                                curr_point, (cores_count - 1) * sub_chunk_size,
+                          (cores_count - 1) * sub_chunk_size + main_chunk_size,
+                                        next_array.data() + (cores_count - 1));
+                    for (int i = 0; i < cores_count - 1; i++) {
                         thrds[i].join();
-                    }*/
-                    //next = next_array[cores_count - 1];
+                    }
+                    final_thread.join();
                     for (int i = 0; i < cores_count; i++) {
-                        int orient = orientation(curr_point, component[next], component[next_array[i]]);
+                        int orient = orientation(curr_point, component[next],
+                                                     component[next_array[i]]);
                         if (orient == 1) {
                             next = next_array[i];
                         }
