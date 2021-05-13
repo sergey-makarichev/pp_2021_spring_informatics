@@ -133,9 +133,8 @@ std::vector<std::pair<double, double> > grahamScanParallel(
             auto localHull = grahamScan(b + st * i, b + st * (i + 1));
 
             for (size_t j = 0; j < localHull.size(); j++) {
-                mutex.lock();
+                std::lock_guard<std::mutex> lock(mutex);
                 lastPoints.push_back(localHull[j]);
-                mutex.unlock();
             }
         });
     }
@@ -145,9 +144,8 @@ std::vector<std::pair<double, double> > grahamScanParallel(
         auto localHull = grahamScan(b + st * (numberOfThreads - 1), e);
 
         for (size_t i = 0; i < localHull.size(); i++) {
-            mutex.lock();
+            std::lock_guard<std::mutex> lock(mutex);
             lastPoints.push_back(localHull[i]);
-            mutex.unlock();
         }
     });
 
