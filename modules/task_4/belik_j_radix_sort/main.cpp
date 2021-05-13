@@ -24,14 +24,6 @@ TEST(Radix_Sort_Merge_Batcher, Test_Sort) {
     delete[] tmp2;
     ASSERT_EQ(v1, vec);
 }
-TEST(Radix_Sort_Merge_Batcher, Test_Sort_Par_1thr) {
-    std::vector<double> vec;
-    const int n = 10;
-    vec = Vector(n, -10.0, 10.0);
-    std::vector<double> v1 = MergeBatcherPar(vec, n, 1);
-    std::sort(vec.begin(), vec.end());
-    ASSERT_EQ(v1, vec);
-}
 TEST(Radix_Sort_Merge_Batcher, Test_Sort_Seq_1thr) {
     std::vector<double> vec;
     const int n = 10;
@@ -40,9 +32,17 @@ TEST(Radix_Sort_Merge_Batcher, Test_Sort_Seq_1thr) {
     std::sort(vec.begin(), vec.end());
     ASSERT_EQ(v1, vec);
 }
+TEST(Radix_Sort_Merge_Batcher, Test_Sort_Par_1thr) {
+    std::vector<double> vec;
+    const int n = 10;
+    vec = Vector(n, -10.0, 10.0);
+    std::vector<double> v1 = MergeBatcherPar(vec, n, 1);
+    std::sort(vec.begin(), vec.end());
+    ASSERT_EQ(v1, vec);
+}
 TEST(Radix_Sort_Merge_Batcher, Test_Sort_Par_4thr) {
     std::vector<double> vec;
-    const int n = 100;
+    const int n = 20;
     vec = Vector(n, -10.0, 10.0);
     std::vector<double> v1 = MergeBatcherPar(vec, n, 4);
     std::sort(vec.begin(), vec.end());
@@ -50,8 +50,8 @@ TEST(Radix_Sort_Merge_Batcher, Test_Sort_Par_4thr) {
 }
 TEST(Radix_Sort_Merge_Batcher, Test_Sort_Par_Seq) {
     std::vector<double> vec;
-    const int n = 100;
-    int thr = 5;
+    const int n = 20;
+    int thr = 4;
     vec = Vector(n, -10000.0, 10000.0);
     std::vector<double> vec1 = vec;
     std::vector<double> v1 = MergeBatcherPar(vec, n, thr);
