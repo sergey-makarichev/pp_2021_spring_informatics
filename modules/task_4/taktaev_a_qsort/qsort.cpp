@@ -83,7 +83,7 @@ void qSortStd(std::vector<double> *arr, int thread_count) {
         threads.emplace_back(std::move(th));
     }
 
-    for(int i = 0; i < thread_count; i++) 
+    for (int i = 0; i < thread_count; i++)
         threads[i].join();
 
     for (int i = 1; i < thread_count; i++) {
