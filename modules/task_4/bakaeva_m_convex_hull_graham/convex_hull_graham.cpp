@@ -1,6 +1,4 @@
 // Copyright 2021 Bakaeva Maria
-#include <mutex>
-#include <thread>
 #include <random>
 #include <ctime>
 #include <cmath>
@@ -10,6 +8,7 @@
 #include <stack>
 
 #include "../../../modules/task_4/bakaeva_m_convex_hull_graham/convex_hull_graham.h"
+#include "../../../3rdparty/unapproved/unapproved.h"
 
 std::vector<std::pair<double, double>> generateRandomPoints(size_t count) {
     std::mt19937 gen;
