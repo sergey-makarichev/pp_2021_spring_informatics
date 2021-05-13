@@ -1,9 +1,9 @@
 // Copyright 2021 Molotkova Svetlana
+#include <time.h>
 #include <gtest/gtest.h>
 #include <limits.h>
 #include <iostream>
 #include <vector>
-#include <time.h> 
 
 #include "./vert_gauss.h"
 
@@ -28,12 +28,12 @@ TEST(Gauss_filter, 1300x1200) {
   clock_t start = clock();
   auto matrix_seq = gaussFilter(matrix, rows, cols, 1, 5);
   clock_t end = clock();
-  double seconds = (double)(end - start) / CLOCKS_PER_SEC;
+  double seconds = static_cast<double>((end - start) / CLOCKS_PER_SEC);
 
   clock_t start1 = clock();
   auto matrix_thr = gaussFilter_par(matrix, rows, cols, 1, 5);
   clock_t end1 = clock();
-  double seconds1 = (double)(end1 - start1) / CLOCKS_PER_SEC;
+  double seconds1 = static_cast<double>((end1 - start1) / CLOCKS_PER_SEC);
   std::cout << "Ses " << seconds << std::endl;
   std::cout << "Parallel " << seconds1 << std::endl;
   ASSERT_EQ(matrix_seq, matrix_thr);
