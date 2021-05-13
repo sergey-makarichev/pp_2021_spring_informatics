@@ -17,16 +17,6 @@ std::vector<int> getRandomVector(int sizeVec) {
     return rVec;
 }
 
-void createCounters(int* sortVec, int* counters, int sizeVec) {
-  unsigned char* bytePointer = (unsigned char*)sortVec;
-  unsigned char* dataEnd = (unsigned char*)(sortVec + sizeVec);
-  int s = static_cast<int>(sizeof(int));
-  while (bytePointer != dataEnd) {
-    for (int i = 0; i < s; i++)
-      counters[256 * i + *bytePointer++]++;
-  }
-}
-
 void mergeOrderVec(int* vec1, int size1,  int* vec2, int size2) {
     int* resVec = new int[size1 + size2];
     int i = 0, s = 0, j = 0;
@@ -46,111 +36,147 @@ void mergeOrderVec(int* vec1, int size1,  int* vec2, int size2) {
     delete[] resVec;
 }
 
-void signedRadix(int byteNumber, int sizeVec, int* sourceVec,
-int* destVec, int* count) {
-  int sum = 0;
-  int* countPointer;
-  if (byteNumber == sizeof(int) - 1) {
-    int numNegative = 0;
-    for (int i = 128; i < 256; i++)
-      numNegative += count[i];
-
-    sum = numNegative;
-    countPointer = count;
-    int tmp;
-    for (int i = 0; i < 128; ++i, ++countPointer) {
-      tmp = *countPointer;
-      *countPointer = sum;
-      sum += tmp;
-    }
-    sum = 0;
-    countPointer = count + 128;
-    for (int i = 0; i < 128; ++i, ++countPointer) {
-      tmp = *countPointer;
-      *countPointer = sum;
-      sum += tmp;
-    }
-  } else {
-    countPointer = count;
-    int tmp;
-    for (int i = 256; i > 0; --i, ++countPointer) {
-      tmp = *countPointer;
-      *countPointer = sum;
-      sum += tmp;
-    }
-  }
-
-  unsigned char* bytePointer = (unsigned char*)sourceVec + byteNumber;
-  int* sourceVecPointer = sourceVec;
-  for (int i = sizeVec; i > 0; --i, bytePointer += sizeof(int), ++sourceVecPointer) {
-    countPointer = count + *bytePointer;
-    destVec[*countPointer] = *sourceVecPointer;
-    ++(*countPointer);
-  }
-}
-
-void signedRadixSort(int* sortVec, int sizeVec) {
-  int* out = new int[sizeVec];
-  std::vector<int> counters(sizeof(int) * 256);
-  int* count;
-  createCounters(sortVec, counters.data(), sizeVec);
-  int s = static_cast<int>(sizeof(int));
-  for (int i = 0; i < s; i++) {
-    count = counters.data() + 256 * i;
-    signedRadix(i, sizeVec, sortVec, out, count);
-    std::swap(sortVec, out);
-  }
-  delete[] out;
-}
-
-void signedRadixSortOmp(int* sortVec, int sizeVec) {
-    int shift = 0;
+void createCounters(std::vector<int>* sortVec, int* counters, int numByte) {
+    unsigned char* bytePointer = (unsigned char*)sortVec->data();
     int s = static_cast<int>(sizeof(int));
-#pragma omp parallel shared(sortVec, sizeVec)
+    for (size_t i = 0; i < sortVec->size(); i++) {
+        counters[bytePointer[s * i + numByte]]++;
+    }
+}
+
+void countersSort(int numByte, std::vector<int>* sortVec,
+    std::vector<int>* output) {
+    unsigned char* bytePointer = (unsigned char*)sortVec->data();
+    const int sizeCounter = 256;
+    int counters[sizeCounter] = { 0 };
+    int typeSize = static_cast<int>(sizeof(int));
+    createCounters(sortVec, counters, numByte);
+    int value = 0;
+    for (int i = 0; i < sizeCounter; i++) {
+        int tmp = counters[i];
+        counters[i] = value;
+        value += tmp;
+    }
+    int index = 0;
+    for (size_t i = 0; i < sortVec->size(); i++) {
+        index = bytePointer[typeSize * i + numByte];
+        output->at(counters[index]++) = sortVec->at(i);
+    }
+}
+
+void unsignedRadixSort(std::vector<int>* sortVec) {
+    std::vector<int>* outbuf = new std::vector<int>(sortVec->size());
+    for (int i = 0; i < 4; i++) {
+        countersSort(i, sortVec, outbuf);
+        std::swap(sortVec, outbuf);
+    }
+}
+
+void signedRadixSort(std::vector<int>* sortVec) {
+    int positiveNum = 0;
+    int negativeNum = 0;
+    for (size_t i = 0; i < sortVec->size(); i++) {
+        if (sortVec->at(i) < 0)
+            negativeNum++;
+        else
+            positiveNum++;
+    }
+     std::vector<int> positiveNumVec(positiveNum);
+    std::vector<int> negativeNumVec(negativeNum);
+
+    int it1 = 0, it2 = 0;
+    for (size_t i = 0; i < sortVec->size(); i++) {
+        if (sortVec->at(i) >= 0)
+            positiveNumVec[it1++] = sortVec->at(i);
+        else
+            negativeNumVec[it2++] = sortVec->at(i);
+    }
+
+    unsignedRadixSort(&positiveNumVec);
+    unsignedRadixSort(&negativeNumVec);
+
+    int current_buff = 0;
+    for (size_t i = 0; i < negativeNumVec.size() ; i++) {
+        sortVec->at(i) = negativeNumVec.at(current_buff);
+        current_buff++;
+    }
+    current_buff = 0;
+    for (size_t i = negativeNumVec.size();
+        i < positiveNumVec.size() + negativeNumVec.size(); i++) {
+        sortVec->at(i) = positiveNumVec.at(current_buff);
+        current_buff++;
+    }
+}
+
+
+
+void signedRadixSortParallel(std::vector<int>* sortVec,
+    int leftIndex, int rightIndex, int sizeVec) {
+
+    int positiveNum = 0;
+    int negativeNum = 0;
+    for (int i = leftIndex; i <= rightIndex; i++) {
+        if (sortVec->at(i) < 0)
+            negativeNum++;
+        else
+            positiveNum++;
+    }
+    std::vector<int> positiveNumVec(positiveNum);
+    std::vector<int> negativeNumVec(negativeNum);
+
+    int it1 = 0, it2 = 0;
+    for (int i = leftIndex; i <= rightIndex; i++) {
+        if (sortVec->at(i) >= 0)
+            positiveNumVec[it1++] = sortVec->at(i);
+        else
+            negativeNumVec[it2++] = sortVec->at(i);
+    }
+
+    unsignedRadixSort(&positiveNumVec);
+    unsignedRadixSort(&negativeNumVec);
+
+    int currentId = 0;
+    for (size_t i = leftIndex; i < negativeNumVec.size() + leftIndex; i++) {
+        sortVec->at(i) = negativeNumVec.at(currentId);
+        currentId++;
+    }
+    currentId = 0;
+    for (size_t i = leftIndex + negativeNumVec.size();
+        i < positiveNumVec.size() + leftIndex + negativeNumVec.size(); i++) {
+        sortVec->at(i) = positiveNumVec.at(currentId);
+        currentId++;
+    }
+}
+
+void signedRadixSortOmp(std::vector<int>* sortVec) {
+    int numberThreads = 0;
+    int sizeVec = sortVec->size();
+#pragma omp parallel
     {
         int sizePartVec = 0;
-        int numberThreads = omp_get_num_threads();
+        numberThreads = omp_get_num_threads();
         sizePartVec = sizeVec / numberThreads;
         int remainder = sizeVec % numberThreads;
         int threadId = omp_get_thread_num();
-
 #pragma omp master
         {
             sizePartVec += remainder;
             remainder = 0;
         }
+        signedRadixSortParallel(sortVec,  threadId * sizePartVec + remainder,
+            (threadId + 1)* sizePartVec + remainder - 1, sizePartVec);
+    }
 
-        int* localOutVec = new int[sizePartVec];
-        int* localInVec = new int[sizePartVec];
-        int j = 0;
-        for (int i = threadId * sizePartVec + remainder;
-        i < (threadId + 1) * sizePartVec + remainder; i++, j++) {
-            localInVec[j] = sortVec[i];
+    for (int i = 1; i < numberThreads; i++) {
+        int remainder = sizeVec % numberThreads;
+        int current_size = sortVec->size() / numberThreads;
+        if (i == 0) {
+            current_size = sortVec->size() /
+                numberThreads + sortVec->size() % numberThreads;
+        } else {
+            current_size = sortVec->size() / numberThreads;
         }
-
-        std::vector<int> counters(sizeof(int) * 256);
-        createCounters(localInVec, counters.data(), sizePartVec);
-        int* count;
-        for (int i = 0; i < s; i++) {
-            count = counters.data() + 256 * i;
-            signedRadix(i, sizePartVec, localInVec, localOutVec, count);
-            std::swap(localInVec, localOutVec);
-        }
-        delete[] localOutVec;
-
-#pragma omp master
-        {
-            for (int i = 0; i < sizePartVec; i++)
-                sortVec[i] = localInVec[i];
-            shift++;
-        }
-#pragma omp barrier
-#pragma omp critical
-        if (threadId != 0) {
-            mergeOrderVec(sortVec, shift * sizePartVec + remainder,
-        localInVec, sizePartVec);
-            shift++;
-        }
-        delete[] localInVec;
+        mergeOrderVec(sortVec->data(), current_size * i + remainder,
+            sortVec->data() + current_size * i  + remainder, current_size);
     }
 }
