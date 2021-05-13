@@ -39,8 +39,8 @@ void mergeOrderVec(int* vec1, int size1,  int* vec2, int size2) {
 void createCounters(std::vector<int>* sortVec, int* counters, int numByte) {
     unsigned char* bytePointer = (unsigned char*)sortVec->data();
     int s = static_cast<int>(sizeof(int));
-    for (int i = 0; i < sortVec->size(); i++) {
-        counters[bytePointer[4 * i + numByte]]++;
+    for (size_t i = 0; i < sortVec->size(); i++) {
+        counters[bytePointer[s * i + numByte]]++;
     }
 }
 
@@ -49,7 +49,7 @@ void countersSort(int numByte, std::vector<int>* sortVec,
     unsigned char* bytePointer = (unsigned char*)sortVec->data();
     const int sizeCounter = 256;
     int counters[sizeCounter] = { 0 };
-    int typeSize = sizeof(int);
+    int typeSize = static_cast<int>(sizeof(int));
     createCounters(sortVec, counters, numByte);
     int value = 0;
     for (int i = 0; i < sizeCounter; i++) {
@@ -58,8 +58,8 @@ void countersSort(int numByte, std::vector<int>* sortVec,
         value += tmp;
     }
     int index = 0;
-    for (int i = 0; i < sortVec->size(); i++) {
-        index = bytePointer[4 * i + numByte];
+    for (size_t i = 0; i < sortVec->size(); i++) {
+        index = bytePointer[typeSize * i + numByte];
         output->at(counters[index]++) = sortVec->at(i);
     }
 }
@@ -75,7 +75,7 @@ void unsignedRadixSort(std::vector<int>* sortVec) {
 void signedRadixSort(std::vector<int>* sortVec) {
     int positiveNum = 0;
     int negativeNum = 0;
-    for (int i = 0; i < sortVec->size(); i++) {
+    for (size_t i = 0; i < sortVec->size(); i++) {
         if (sortVec->at(i) < 0)
             negativeNum++;
         else
@@ -85,7 +85,7 @@ void signedRadixSort(std::vector<int>* sortVec) {
     std::vector<int> negativeNumVec(negativeNum);
 
     int it1 = 0, it2 = 0;
-    for (int i = 0; i < sortVec->size(); i++) {
+    for (size_t i = 0; i < sortVec->size(); i++) {
         if (sortVec->at(i) >= 0)
             positiveNumVec[it1++] = sortVec->at(i);
         else
@@ -96,12 +96,12 @@ void signedRadixSort(std::vector<int>* sortVec) {
     unsignedRadixSort(&negativeNumVec);
 
     int current_buff = 0;
-    for (int i = 0; i < negativeNumVec.size() ; i++) {
+    for (size_t i = 0; i < negativeNumVec.size() ; i++) {
         sortVec->at(i) = negativeNumVec.at(current_buff);
         current_buff++;
     }
     current_buff = 0;
-    for (int i = negativeNumVec.size();
+    for (size_t i = negativeNumVec.size();
         i < positiveNumVec.size() + negativeNumVec.size(); i++) {
         sortVec->at(i) = positiveNumVec.at(current_buff);
         current_buff++;
@@ -136,12 +136,12 @@ void signedRadixSortParallel(std::vector<int>* sortVec,
     unsignedRadixSort(&negativeNumVec);
 
     int currentId = 0;
-    for (int i = leftIndex; i < negativeNumVec.size() + leftIndex; i++) {
+    for (size_t i = leftIndex; i < negativeNumVec.size() + leftIndex; i++) {
         sortVec->at(i) = negativeNumVec.at(currentId);
         currentId++;
     }
     currentId = 0;
-    for (int i = leftIndex + negativeNumVec.size();
+    for (size_t i = leftIndex + negativeNumVec.size();
         i < positiveNumVec.size() + leftIndex + negativeNumVec.size(); i++) {
         sortVec->at(i) = positiveNumVec.at(currentId);
         currentId++;
@@ -171,10 +171,10 @@ void signedRadixSortOmp(std::vector<int>* sortVec) {
         int remainder = sizeVec % numberThreads;
         int current_size = sortVec->size() / numberThreads;
         if (i == 0) {
-            int current_size = sortVec->size() /
+            current_size = sortVec->size() /
                 numberThreads + sortVec->size() % numberThreads;
         } else {
-            int current_size = sortVec->size() / numberThreads;
+            current_size = sortVec->size() / numberThreads;
         }
         mergeOrderVec(sortVec->data(), current_size * i + remainder,
             sortVec->data() + current_size * i  + remainder, current_size);
