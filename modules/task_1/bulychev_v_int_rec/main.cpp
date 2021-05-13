@@ -7,19 +7,13 @@
 double f(std::vector<double> t) {
     double x = t[0];
     double y = t[1];
-    return x * x * x - y * y;
+    return x * x - y * y;
 }
 
-double f1(std::vector<double> t) {
+double f5(std::vector<double> t) {
     double x = t[0];
     double y = t[1];
-    double z = t[2];
-    return (z / (3 * x * x + y * y));
-}
-
-double f2(std::vector<double> t) {
-    double x = t[0];
-    return x * x - sin(x);
+    return x * x + y * y;
 }
 
 double f3(std::vector<double> t) {
@@ -28,11 +22,22 @@ double f3(std::vector<double> t) {
     return x + y + 1;
 }
 
-double f4(std::vector<double> t) {
+double f2(std::vector<double> t) {
+    double x = t[0];
+    return x * x - x;
+}
+
+double f1(std::vector<double> t) {
     double x = t[0];
     double y = t[1];
     double z = t[2];
-    return x * x - 2 * y - cos(z) + 2;
+    return (z - (5 * x + 2 * y));
+}
+
+double f4(std::vector<double> t) {
+    double x = t[0];
+    double y = t[1];
+    return x * 10 - x * y + cos(y);
 }
 
 TEST(Integrate_rectangle, Test_int_rec_1) {
@@ -40,35 +45,33 @@ TEST(Integrate_rectangle, Test_int_rec_1) {
     std::vector<double> a(s);
     std::vector<double> b(s);
 
-    a[0] = 5;
-    b[0] = 17;
-    a[1] = 21;
-    b[1] = 53;
+    a[0] = 0;
+    b[0] = 3;
+    a[1] = 0;
+    b[1] = 3;
 
-    double ans = 104704;
+    double ans = 54;
 
-    double ans1 = Calculation(a, b, 50, f);
+    double ans1 = Calculation(a, b, 10, f5);
 
-    ASSERT_NEAR(ans, ans1, 100);
+    ASSERT_NEAR(ans, ans1, 10);
 }
 
 TEST(Integrate_rectangle, Test_int_rec_2) {
-    int s = 3;
+    int s = 2;
     std::vector<double> a(s);
     std::vector<double> b(s);
 
-    a[0] = 4;
-    b[0] = 10;
-    a[1] = 15;
-    b[1] = 20;
-    a[2] = 1;
-    b[2] = 10;
+    a[0] = 0;
+    b[0] = 5;
+    a[1] = 0;
+    b[1] = 3;
 
-    double ans = 3.3218;
+    double ans = 79;
 
-    double ans1 = Calculation(a, b, 50, f1);
+    double ans1 = Calculation(a, b, 10, f);
 
-    ASSERT_NEAR(ans, ans1, 100);
+    ASSERT_NEAR(ans, ans1, 10);
 }
 
 TEST(Integrate_rectangle, Test_int_rec_3) {
@@ -76,14 +79,14 @@ TEST(Integrate_rectangle, Test_int_rec_3) {
     std::vector<double> a(s);
     std::vector<double> b(s);
 
-    a[0] = -32;
-    b[0] = 134;
+    a[0] = 5;
+    b[0] = 25;
 
-    double ans = 812956.0353;
+    double ans = 4867;
 
-    double ans1 = Calculation(a, b, 50, f2);
+    double ans1 = Calculation(a, b, 10, f2);
 
-    ASSERT_NEAR(ans, ans1, 200);
+    ASSERT_NEAR(ans, ans1, 100);
 }
 
 TEST(Integrate_rectangle, Test_int_rec_4) {
@@ -91,12 +94,16 @@ TEST(Integrate_rectangle, Test_int_rec_4) {
     std::vector<double> a(s);
     std::vector<double> b(s);
 
-    a[0] = 5;
-    b[0] = 14;
-    a[1] = 3;
-    b[1] = 21;
+    a[0] = 0;
+    b[0] = 1;
+    a[1] = 2;
+    b[1] = 4;
 
-    ASSERT_NO_THROW(Calculation(a, b, 5, f3));
+    double ans = 9;
+
+    double ans1 = Calculation(a, b, 10, f3);
+
+    ASSERT_NEAR(ans, ans1, 10);
 }
 
 TEST(Integrate_rectangle, Test_int_rec_5) {
@@ -104,18 +111,27 @@ TEST(Integrate_rectangle, Test_int_rec_5) {
     std::vector<double> a(s);
     std::vector<double> b(s);
 
-    a[0] = 15;
-    b[0] = 25;
-    a[1] = 30;
-    b[1] = 45;
+    a[0] = 4;
+    b[0] = 10;
+    a[1] = 7;
+    b[1] = 33;
     a[2] = -1;
-    b[2] = 0.5;
+    b[2] = 5;
 
-    double ans = 75251.8655;
+    ASSERT_NO_THROW(Calculation(a, b, 5, f1));
+}
 
-    double ans1 = Calculation(a, b, 50, f4);
+TEST(Integrate_rectangle, Test_int_rec_6) {
+    int s = 2;
+    std::vector<double> a(s);
+    std::vector<double> b(s);
 
-    ASSERT_NEAR(ans, ans1, 200);
+    a[0] = 4;
+    b[0] = 10;
+    a[1] = 7;
+    b[1] = 33;
+
+    ASSERT_NO_THROW(Calculation(a, b, 5, f4));
 }
 
 int main(int argc, char **argv) {
