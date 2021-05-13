@@ -8,7 +8,7 @@
 #include "../../../modules/task_2/bulychev_v_int_rec/int_rec_omp.h"
 
 double Calculation_Seq(std::vector<double> a, std::vector<double> b,
-    int n, double(*f)(double, double)) {
+    int n, double(*f)(std::vector<double>)) {
     int size_a = a.size();
     std::vector<double> h;
     double result = 0.0;
@@ -26,7 +26,7 @@ double Calculation_Seq(std::vector<double> a, std::vector<double> b,
             double t3 = h[j] * 0.5;
             p[j] = (i % n) * h[j] + a[j] + t3;
         }
-        result += f(p[0], p[1]);
+        result += f(p);
     }
 
     int t4 = size_a;
@@ -41,10 +41,7 @@ double Calculation_Seq(std::vector<double> a, std::vector<double> b,
 }
 
 double Calculation_Omp(std::vector<double> a, std::vector<double> b,
-    int n, double(*f)(double, double)) {
-    int const threads = 4;
-    omp_set_num_threads(threads);
-
+    int n, double(*f)(std::vector<double>)) {
     int size_a = a.size();
     std::vector<double> h;
     int num = pow(n, size_a);
@@ -56,14 +53,16 @@ double Calculation_Omp(std::vector<double> a, std::vector<double> b,
     }
 
     double result = 0.0;
+    double r = 0.0;
     std::vector <double> p(size_a);
 
-#pragma omp parallel for reduction(+ : result)
+#pragma omp parallel for reduction(+ : r)
     for (int i = 0; i < num; i++) {
         for (int j = 0; j < size_a; j++) {
-            p[j] = (i % n) * h[j] + a[j] + (h[j] * 0.5);
+            double t3 = h[j] * 0.5;
+            p[j] = (i % n) * h[j] + a[j] + t3;
         }
-        result += f(p[0], p[1]);
+        r += f(p);
     }
 
     int t4 = size_a;
@@ -72,7 +71,7 @@ double Calculation_Omp(std::vector<double> a, std::vector<double> b,
         t5 = t5 * h[i];
     }
 
-    result = result * t5;
+    result = r * t5;
 
     return result;
 }
