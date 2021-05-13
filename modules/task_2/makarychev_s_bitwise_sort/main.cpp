@@ -60,20 +60,20 @@ TEST(Omp_Radix_Sort, sort_just_sorted_vector) {
     ASSERT_EQ(vec1, vec2);
 }
 
-//TEST(Omp_Radix_Sort, sort_vector_of_random_value_with_time) {
-//    std::vector<int> vec1 = getRandomVector(150000000);
-//    std::vector<int> vec2 = vec1;
-//    std::cout << std::endl;
-//    double t1 = omp_get_wtime();
-//    signedRadixSortOmp(&vec1);
-//    double t2 = omp_get_wtime();
-//    double ompTime = t2 - t1;
-//    std::cout << "Par: " << ompTime << std::endl;
-//    t1 = omp_get_wtime();
-//    signedRadixSort(&vec2);
-//    t2 = omp_get_wtime();
-//    double seqTime = t2 - t1;
-//    std::cout << "Seq: " << seqTime << std::endl;
-//    std::cout << "Acceleration: " << seqTime / ompTime << std::endl;
-//    ASSERT_EQ(vec1, vec2);
-//}
+/*TEST(Omp_Radix_Sort, sort_vector_of_random_value_with_time) {
+    std::vector<int> vec1 = getRandomVector(150000000);
+    std::vector<int> vec2 = vec1;
+    std::cout << std::endl;
+    double t1 = omp_get_wtime();
+    signedRadixSortOmp(&vec1);
+    double t2 = omp_get_wtime();
+    double ompTime = t2 - t1;
+    std::cout << "Par: " << ompTime << std::endl;
+    t1 = omp_get_wtime();
+    signedRadixSort(&vec2);
+    t2 = omp_get_wtime();
+    double seqTime = t2 - t1;
+    std::cout << "Seq: " << seqTime << std::endl;
+    std::cout << "Acceleration: " << seqTime / ompTime << std::endl;
+    ASSERT_EQ(vec1, vec2);
+}*/
