@@ -177,8 +177,8 @@ TEST(Shagov_Maksim_Std, Test_8_on_8_Random_Matrix_Mult) {
     ASSERT_TRUE(isEqualMatrix(C, C_block));
 }
 
-TEST(Shagov_Maksim_Std, Test_50_on_50_Random_Matrix_Mult) {
-    size_t size = 50;
+/*TEST(Shagov_Maksim_Std, Test_50_on_50_Random_Matrix_Mult) {
+    size_t size = 1000;
     Matrix A = createRandomMatrix(size * size);
     Matrix B = createRandomMatrix(size * size);
     std::pair<double, double> time = {0, 0};
@@ -193,7 +193,7 @@ TEST(Shagov_Maksim_Std, Test_50_on_50_Random_Matrix_Mult) {
     std::cout << "Parallel " << (time.second - time.first) << ' '
               << std::endl;
     ASSERT_TRUE(isEqualMatrix(C, C_1));
-}
+}*/
 
 
 int main(int argc, char **argv) {
