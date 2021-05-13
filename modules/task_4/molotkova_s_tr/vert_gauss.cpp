@@ -91,7 +91,7 @@ std::vector<double> gaussFilter_par(const std::vector<double>& matrix, int rows,
   int offset = rows / nthreads;
   int rem = rows % nthreads;
   for (int i = 0; i < nthreads; i++) {
-        threads[i] = std::thread([i, offset, nthreads, rem, cols, radius, size, rows,
+        threads[i] = std::thread([offset, nthreads, rem, cols, radius, size, rows,
         &kernel, &matrix, &resultMatrix](int thread) {
           int begin = thread * offset;
           int numrows;
