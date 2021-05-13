@@ -67,6 +67,7 @@ void merge(double* a, int size_a, double* b, int size_b) {
     for (int i = 0; i < size_c; i++) {
         a[i] = c[i];
     }
+    delete[] c;
 }
 
 void qSortStd(std::vector<double> *arr, int thread_count) {
