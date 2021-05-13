@@ -56,16 +56,11 @@ TEST(Image_contrast, DISABLED_Test5) {
     std::cout << "Seq: " <<
         static_cast<double>((time2 - time1).seconds()) << std::endl;
     time1 = tbb::tick_count::now();
-    Result result_omp = Contrastomp(image);
-    time2 = tbb::tick_count::now();
-    std::cout << "Omp: " <<
-        static_cast<double>((time2 - time1).seconds()) << std::endl;
-    time1 = tbb::tick_count::now();
     Result result_tbb = Contrasttbb(image);
     time2 = tbb::tick_count::now();
     std::cout << "Tbb: " <<
         static_cast<double>((time2 - time1).seconds()) << std::endl;
-        ASSERT_EQ(result_omp, result_tbb);
+        ASSERT_EQ(result_seq, result_tbb);
     }
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
