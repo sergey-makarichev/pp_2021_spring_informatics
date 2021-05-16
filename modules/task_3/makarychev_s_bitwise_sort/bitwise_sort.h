@@ -1,7 +1,6 @@
 // Copyright 2021 Makarychev Sergey
 #ifndef  MODULES_TASK_3_MAKARYCHEV_S_BITWISE_SORT_BITWISE_SORT_H_
 #define MODULES_TASK_3_MAKARYCHEV_S_BITWISE_SORT_BITWISE_SORT_H_
-#include <omp.h>
 #include <iostream>
 #include <vector>
 

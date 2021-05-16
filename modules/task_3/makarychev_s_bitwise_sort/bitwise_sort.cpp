@@ -1,5 +1,6 @@
 // Copyright 2021 Makarychev Sergey
-#include <tbb/tbb.h>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_for.h>
 #include <random>
 #include <algorithm>
 #include <vector>
