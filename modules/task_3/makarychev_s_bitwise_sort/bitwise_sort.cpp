@@ -159,7 +159,6 @@ void signedRadixSortTbb(std::vector<int>* sortVec) {
         [&sortVec](const tbb::blocked_range<int>& r) {
         signedRadixSortParallel(sortVec, r.begin(), r.end() - 1);
         });
-    int i_prev = 0;
     for (int i = 1; i < sizeVec; i++) {
         if (sortVec->at(i) < sortVec->at(i - 1)) {
                 mergeOrderVec(sortVec->data(), previous,
