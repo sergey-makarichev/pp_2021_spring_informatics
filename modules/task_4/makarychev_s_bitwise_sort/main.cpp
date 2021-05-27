@@ -1,6 +1,7 @@
 // Copyright 2021 Makarychev Sergey
+#include <time.h>
 #include <gtest/gtest.h>
-#include <chrono>
+#include <utility>
 #include <algorithm>
 #include <vector>
 #include "./bitwise_sort.h"
@@ -62,21 +63,20 @@ TEST(Omp_Radix_Sort, sort_just_sorted_vector) {
 }
 
 /*TEST(Omp_Radix_Sort, sort_vector_of_random_value_with_time) {
-    auto time1 = std::chrono::duration<double>{};
-    auto time2 = std::chrono::duration<double>{};
+    time_t t1, t2;
     std::vector<int> vec1 = getRandomVector(15000000);
     std::vector<int> vec2 = vec1;
     std::cout << std::endl;
-    auto const start1 = std::chrono::high_resolution_clock::now();
+    t1 = clock();
     signedRadixSortStd(&vec1);
-    auto const finish1 = std::chrono::high_resolution_clock::now();
-    time1 += std::chrono::duration_cast<std::chrono::duration<double>>(finish1 - start1);
-    std::cout << "Par: " << time1.count() << std::endl;
-    auto const start2 = std::chrono::high_resolution_clock::now();
+    t2 = clock();
+    double par = t2 - t1;
+    std::cout << "Par: " << par / CLOCKS_PER_SEC << std::endl;
+    t1 = clock();
     signedRadixSort(&vec2);
-    auto const finish2 = std::chrono::high_resolution_clock::now();
-    time2 += std::chrono::duration_cast<std::chrono::duration<double>>(finish2 - start2);
-    std::cout << "Seq: " << time2.count() << std::endl;
-    std::cout << "Acceleration: " << time2.count() / time1.count() << std::endl;
+    t2 = clock();
+    double seq = t2 - t1;
+    std::cout << "Seq: " << seq / CLOCKS_PER_SEC << std::endl;
+    std::cout << "Acceleration: " << seq / par << std::endl;
     ASSERT_EQ(vec1, vec2);
 }*/
