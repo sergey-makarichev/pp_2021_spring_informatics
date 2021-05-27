@@ -1,6 +1,6 @@
 // Copyright 2021 Makarychev Sergey
-#ifndef  MODULES_TASK_2_MAKARYCHEV_S_BITWISE_SORT_BITWISE_SORT_H_
-#define MODULES_TASK_2_MAKARYCHEV_S_BITWISE_SORT_BITWISE_SORT_H_
+#ifndef  MODULES_TASK_4_MAKARYCHEV_S_BITWISE_SORT_BITWISE_SORT_H_
+#define MODULES_TASK_4_MAKARYCHEV_S_BITWISE_SORT_BITWISE_SORT_H_
 #include <omp.h>
 #include <iostream>
 #include <vector>
@@ -16,4 +16,4 @@ void signedRadixSortParallel(std::vector<int>* sortVec,
 void mergeOrderVec(int* vec1, int size1, int* vec2, int size2);
 void signedRadixSortStd(std::vector<int>* sortVec);
 
-#endif  // MODULES_TASK_2_MAKARYCHEV_S_BITWISE_SORT_BITWISE_SORT_H_
+#endif  // MODULES_TASK_4_MAKARYCHEV_S_BITWISE_SORT_BITWISE_SORT_H_
