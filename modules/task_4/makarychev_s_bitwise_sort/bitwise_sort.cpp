@@ -156,7 +156,7 @@ void signedRadixSortStd(std::vector<int>* sortVec) {
     std::vector<std::thread> threads;
     int remainder = sizeVec % numberThreads;
     for (int i = 0; i < numberThreads; i++) {
-        std::thread th([&sortVec, &numberThreads, &sizePartVec,
+        std::thread th([&sortVec, &sizePartVec,
             &remainder](int i) {
             if (i == 0) {
                 signedRadixSortParallel(sortVec, i,
