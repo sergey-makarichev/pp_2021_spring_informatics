@@ -71,6 +71,7 @@ void unsignedRadixSort(std::vector<int>* sortVec) {
         countersSort(i, sortVec, outbuf);
         std::swap(sortVec, outbuf);
     }
+    delete outbuf;
 }
 
 void signedRadixSort(std::vector<int>* sortVec) {
